@@ -27,6 +27,7 @@ function createApp(database: Database) {
 
   function parseDate(dateString: string | undefined): Date | undefined {
     if (dateString) {
+      let parse2 = convertDate(new Date(dateString));
       return new Date(dateString);
     }
   }
