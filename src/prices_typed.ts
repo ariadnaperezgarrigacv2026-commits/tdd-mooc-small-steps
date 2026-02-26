@@ -89,7 +89,7 @@ function createApp(database: Database) {
       if (
         date &&
         convertDate(date).year === holiday2.year &&
-        date.getMonth() === holiday.getMonth() &&
+        convertDate(date).month === holiday2.month &&
         date.getDate() === holiday.getDate()
       ) {
         return true;
