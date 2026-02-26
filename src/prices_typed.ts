@@ -25,18 +25,17 @@ function createApp(database: Database) {
     res.json({ cost });
   });
 
-  function parseDate(dateString: string | undefined): Date | undefined {
+  function parseDate(dateString: string | undefined): Temporal.PlainDate | undefined {
     if (dateString) {
-      let parse2 = convertDate(new Date(dateString));
-      return new Date(dateString);
+      return Temporal.PlainDate.from(dateString);
     }
   }
 
-  function calculateCost(age: number | undefined, type: string, date: Date | undefined, baseCost: number, plainDate: Temporal.PlainDate = convertDate(date)) {
+  function calculateCost(age: number | undefined, type: string, date: Temporal.PlainDate | undefined, baseCost: number) {
     if (type === "night") {
       return calculateCostForNightTicket(age, baseCost);
     } else {
-      return calculateCostForDayTicket(age, date, baseCost, plainDate);
+      return calculateCostForDayTicket(age, date, baseCost);
     }
   }
 
@@ -53,8 +52,8 @@ function createApp(database: Database) {
     return baseCost;
   }
 
-  function calculateCostForDayTicket(age: number | undefined, date: Date | undefined, baseCost: number, plainDate: Temporal.PlainDate = convertDate(date)) {
-    let reduction = calculateReduction(date, plainDate);
+  function calculateCostForDayTicket(age: number | undefined, date: Temporal.PlainDate | undefined, baseCost: number) {
+    let reduction = calculateReduction(date);
     if (age === undefined) {
       return Math.ceil(baseCost * (1 - reduction / 100));
     }
@@ -70,35 +69,33 @@ function createApp(database: Database) {
     return Math.ceil(baseCost * (1 - reduction / 100));
   }
 
-  function calculateReduction(date: Date | undefined, plainDate: Temporal.PlainDate = convertDate(date)) {
+  function calculateReduction(date: Temporal.PlainDate| undefined) {
     let reduction = 0;
-    if (plainDate && isMonday(date) && !isHoliday(date)) {
+    if (date && isMonday(date) && !isHoliday(date)) {
       reduction = 35;
     }
     return reduction;
   }
 
-  function isMonday(date: Date, plainDate: Temporal.PlainDate = convertDate(date)) {
-    return plainDate.dayOfWeek === 1;
+  function isMonday(date: Temporal.PlainDate) {
+    return date.dayOfWeek === 1;
   }
 
-  function isHoliday(date: Date | undefined, plainDate: Temporal.PlainDate | undefined = convertDate(date) ) {
+  function isHoliday(date: Temporal.PlainDate | undefined ) {
     const holidays = database.getHolidays();
     for (let row of holidays) {
-      let holiday2 = convertDate(new Date(row.holiday));
+      let holiday2 = Temporal.PlainDate.from(row.holiday);
       if (
-        plainDate &&
-        plainDate.year === holiday2.year &&
-        plainDate.month === holiday2.month &&
-        plainDate.day === holiday2.day
+        date &&
+        date.year === holiday2.year &&
+        date.month === holiday2.month &&
+        date.day === holiday2.day
       ) {
         return true;
       }
     }
     return false;
   }
-
-  function convertDate(date: Date | undefined):Temporal.PlainDate | undefined { if(date) return Temporal.PlainDate.from(date.toISOString().replace("Z","")); return undefined;}
 
   return app;
 }
