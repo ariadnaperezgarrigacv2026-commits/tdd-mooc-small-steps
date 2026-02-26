@@ -32,6 +32,7 @@ function createApp(database: Database) {
   }
 
   function calculateCost(age: number | undefined, type: string, date: Date | undefined, baseCost: number) {
+    let date2 = convertDate(date)
     if (type === "night") {
       return calculateCostForNightTicket(age, baseCost);
     } else {
