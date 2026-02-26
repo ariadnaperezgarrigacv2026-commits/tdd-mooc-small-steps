@@ -77,7 +77,7 @@ function createApp(database: Database) {
     return reduction;
   }
 
-  function isMonday(date: Temporal.PlainDate) {
+  function isMonday(date: Date) {
     return date.getUTCDay() === 1;
   }
 
