@@ -97,7 +97,7 @@ function createApp(database: Database) {
     return false;
   }
 
-  function convertDate(date: Date):Temporal.PlainDate {}
+  function convertDate(date: Date):Temporal.PlainDate { return true}
 
   return app;
 }
