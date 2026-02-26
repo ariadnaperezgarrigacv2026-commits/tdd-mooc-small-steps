@@ -97,7 +97,7 @@ function createApp(database: Database) {
     return false;
   }
 
-  function convertDate(date: Date):Temporal.PlainDate | undefined { if(date) return Temporal.PlainDate.from(date.toISOString().replace("Z","")); return undefined;}
+  function convertDate(date: Date | undefined):Temporal.PlainDate | undefined { if(date) return Temporal.PlainDate.from(date.toISOString().replace("Z","")); return undefined;}
 
   return app;
 }
